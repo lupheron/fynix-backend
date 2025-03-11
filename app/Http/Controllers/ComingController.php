@@ -48,13 +48,13 @@ class ComingController extends Controller
                     'pr_id' => $item['pr_id'],
                     'count' => $item['count'],
                     'price' => $item['price'],
-                    'in_summa' => $item['in_summa'],
+                    'summa' => $item['summa'],
                 ]);
 
                 if ($itemId) {
                     DB::table('products')->where('id', $item['pr_id'])->update([
                         'count' => DB::raw('count + ' . $item['count']),
-                        'summa' => DB::raw('summa + ' . $item['in_summa']) // Ensure this does not overwrite values incorrectly
+                        'summa' => DB::raw('summa + ' . $item['summa']) // Ensure this does not overwrite values incorrectly
                     ]);
 
                     // Add inserted item to response
@@ -63,7 +63,7 @@ class ComingController extends Controller
                         'pr_id' => $item['pr_id'],
                         'count' => $item['count'],
                         'price' => $item['price'],
-                        'in_summa' => $item['in_summa'],
+                        'summa' => $item['summa'],
                     ];
                 }
             }
@@ -87,7 +87,7 @@ class ComingController extends Controller
 
         $it = DB::table('in_item')->where('id', $id)->update([
             'count' => $request['count'],
-            'summa' => $request['in_summa'],
+            'summa' => $request['summa'],
             'status' => $status,
             'updated_at' => Carbon::now(),
         ]);
