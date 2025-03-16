@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ComingController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\OutController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\UsersModelController;
@@ -74,6 +75,12 @@ Route::group(['middleware' => [CorsMiddleware::class]], function () {
     Route::post('/createcoming', [ComingController::class, 'create']);
     Route::put('/updatecoming/{id}', [ComingController::class, 'update']);
     Route::delete('/deletecoming/{id}', [ComingController::class, 'destroy']);
+
+    // RASXOD
+    Route::get('/out', [OutController::class, 'index']);
+    Route::post('/createout', [OutController::class, 'create']);
+    Route::put('/updateout/{id}', [OutController::class, 'update']);
+    Route::delete('/deleteout/{id}', [OutController::class, 'destroy']);
 });
 
 Route::group(['middleware' => UserAuthMiddleware::class], function () {});
