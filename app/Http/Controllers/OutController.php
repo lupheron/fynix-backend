@@ -90,6 +90,25 @@ class OutController extends Controller
     {
         $status = $request['status'] == 1 ? 1 : 0; // Ensure status is either 1 or 0
 
+        // Get the old values before update
+        $oldItem = DB::table('out_item')->where('id', $id)->first();
+
+        if (!$oldItem) {
+            return response()->json(["message" => "Item not found"], 404);
+        }
+
+        // Get the related product
+        $product = DB::table('products')->where('id', $oldItem->pr_id)->first();
+
+        if (!$product) {
+            return response()->json(["message" => "Product not found"], 404);
+        }
+
+        // Calculate the differences in count and summa
+        $countDiff = $request['count'] - $oldItem->count;
+        $summaDiff = $request['summa'] - $oldItem->summa;
+
+        // Update the out_item table
         $it = DB::table('out_item')->where('id', $id)->update([
             'count' => $request['count'],
             'summa' => $request['summa'],
@@ -97,8 +116,14 @@ class OutController extends Controller
             'updated_at' => Carbon::now(),
         ]);
 
-        $tqs = DB::table('out_item')->where('out_id', $request['out_id'])->sum('summa');
+        // Update the products table
+        DB::table('products')->where('id', $oldItem->pr_id)->update([
+            'count' => DB::raw('count - ' . $countDiff), // Subtract the difference
+            'summa' => DB::raw('summa - ' . $summaDiff),
+        ]);
 
+        // Recalculate the total summa in the 'out' table
+        $tqs = DB::table('out_item')->where('out_id', $request['out_id'])->sum('summa');
         $tq = DB::table('out')->where('id', $request['out_id'])->update([
             'summa' => $tqs,
         ]);
@@ -109,6 +134,7 @@ class OutController extends Controller
             return response()->json(["message" => "Error while updating"]);
         }
     }
+
 
 
     public function destroy($id)
