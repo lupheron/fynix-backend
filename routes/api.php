@@ -20,12 +20,12 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 Route::group(['middleware' => [CorsMiddleware::class]], function () {
     // USERS
-    Route::post('/login', [UsersModelController::class, 'login']);
-    Route::post('/register', [UsersModelController::class, 'register']);
     Route::get('/users', [UsersModelController::class, 'index']);
+    Route::post('/register', [UsersModelController::class, 'register']);
+    Route::post('/login', [UsersModelController::class, 'login']);
+    Route::post('/createuser', [UsersModelController::class, 'create']);
     Route::delete('/deleteuser/{id}', [UsersModelController::class, 'destroy']);
     Route::put('/updateuser/{id}', [UsersModelController::class, 'update']);
-    Route::post('/createuser', [UsersModelController::class, 'create']);
 
     // COUNTRY
     Route::get('/country', [CountryController::class, 'index']);

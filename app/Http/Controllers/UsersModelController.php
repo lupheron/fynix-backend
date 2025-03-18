@@ -45,7 +45,7 @@ class UsersModelController extends Controller
      */
     public function login(Request $request)
     {
-        $user = User::where('email', $request['email'])->first();
+        $user = DB::table('users')->where('email', $request['email'])->first();
         if (Hash::check($request['password'], $user->password)) {
             $token = Hash::make($request['email'] . $request['password']);
             $t = DB::table('users')->where('id', $user->id)->update(['remember_token' => $token]);
