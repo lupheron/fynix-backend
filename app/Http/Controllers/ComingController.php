@@ -22,6 +22,20 @@ class ComingController extends Controller
         return $tq;
     }
 
+    public function getMonthlyIncoming()
+    {
+        $currentYear = date('Y');
+
+        $incoming = DB::table('tovar_qabuli')
+            ->select(DB::raw('MONTH(date) as month, SUM(summa) as total_incoming'))
+            ->whereYear('date', $currentYear)
+            ->groupBy('month')
+            ->orderBy('month', 'ASC')
+            ->get();
+
+        return response()->json($incoming);
+    }
+
     public function create(Request $request)
     {
         $request['created_at'] = Carbon::now();

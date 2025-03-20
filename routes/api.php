@@ -72,12 +72,15 @@ Route::group(['middleware' => [CorsMiddleware::class]], function () {
 
     // PRIXOD
     Route::get('/coming', [ComingController::class, 'index']);
+    Route::get('/getMonthlyIncoming', [ComingController::class, 'getMonthlyIncoming']);
     Route::post('/createcoming', [ComingController::class, 'create']);
     Route::put('/updatecoming/{id}', [ComingController::class, 'update']);
     Route::delete('/deletecoming/{id}', [ComingController::class, 'destroy']);
 
     // RASXOD
     Route::get('/out', [OutController::class, 'index']);
+    Route::get('/monthly-sales', [OutController::class, 'getMonthlySales']);
+    Route::get('/annual-summ', [OutController::class, 'getYearSumms']);
     Route::post('/createout', [OutController::class, 'create']);
     Route::put('/updateout/{id}', [OutController::class, 'update']);
     Route::delete('/deleteout/{id}', [OutController::class, 'destroy']);

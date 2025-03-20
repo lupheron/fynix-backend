@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use function Laravel\Prompts\select;
+
 class OutController extends Controller
 {
     public function index()
@@ -21,6 +23,31 @@ class OutController extends Controller
         return $tq;
     }
 
+    public function getMonthlySales()
+    {
+        $currentYear = date('Y'); // Get the current year
+
+        $sales = DB::table('out')
+            ->select(DB::raw('month, SUM(summa) as total_sales'))
+            ->where('year', $currentYear) // Filter only the current year
+            ->groupBy('month')
+            ->orderBy('month', 'ASC')
+            ->get();
+
+        return response()->json($sales);
+    }
+
+    public function getYearSumms()
+    {
+        $currentYear = date('Y'); // Get the current year
+
+        $totalSales = DB::table('out')
+            ->where('year', $currentYear) // Filter by current year
+            ->sum('summa'); // Get the total sum of the "summa" column
+
+        return response()->json(['total_sales' => $totalSales]);
+    }
+
     public function create(Request $request)
     {
         $request['created_at'] = Carbon::now();
@@ -31,7 +58,9 @@ class OutController extends Controller
 
         // Create order with calculated summa
         $orderId = DB::table('out')->insertGetId([
-            'date' => $request->input('date'),
+            'day' => $request['day'],
+            'month' => $request['month'],
+            'year' => $request['year'],
             'summa' => $totalSumma, // Now calculated instead of taken from request
             'created_at' => Carbon::now(),
             'status' => 1
@@ -75,7 +104,9 @@ class OutController extends Controller
 
             return response()->json([
                 'id' => $orderId,
-                'date' => $request['date'],
+                'day' => $request['day'],
+                'month' => $request['month'],
+                'year' => $request['year'],
                 'summa' => $totalSumma,
                 'items' => $insertedItems
             ], 201);
