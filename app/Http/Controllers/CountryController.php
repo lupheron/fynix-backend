@@ -16,7 +16,9 @@ class CountryController extends Controller
     public function create(Request $request)
     {
         $country = DB::table('country')->insertOrIgnore([
-            'name' => $request['name']
+            'name' => $request['name'],
+            'name_ru' => $request['name_ru'],
+            'name_uz' => $request['name_uz']
         ]);
 
         if ($country) {
@@ -29,7 +31,9 @@ class CountryController extends Controller
     public function update(Request $request, $id)
     {
         $country = DB::table('country')->where('id', $id)->update([
-            'name' => $request['name']
+            'name' => $request['name'],
+            'name_ru' => $request['name_ru'],
+            'name_uz' => $request['name_uz']
         ]);
 
         if ($country) {
